@@ -48,7 +48,7 @@ uint256 FirstAcceesTokens_MP4 = 75 ; // 5263
 
 // TO DO :
     // 1. Set up the functions for
-        // a. mint token 
+        // a. mint token & struct definition
         // b. transfer token
         // c. royalty
         // d.  
@@ -67,89 +67,20 @@ struct BasicNftAttributes
         uint256 tokenName ;
         string ImageURI ;
         string tokenURI  ;
+        string tokenType ;
     };
+mapping(address=>BasicNftAttributes) public BasicAttributes_NFTTracker ;
 
-    /**
-    0xcce -> tokenId : 1
-             tokenName : Ranger
-             ImageURI : "ipfs://"
-             tokenURI : "ipfs://"   --> Here will point to the metadata
-
-{
-  "name": "Meka Rhinos #1449",
-  "description": "MekaRhinos is a special collection on the ethereum network with a limited number of 3.333 unique pieces. Thanks to the specially developed staking system, MekaRhino holders will generate daily $RHNO tokens and will be able to mint the upcoming Mutant MekaRhino collection using $RHNO tokens.\n\nMekaRhino holders will also able to use $RHNO tokens to purchase limited edition items available in the Merch Shop.",
-  "image": "ipfs://bafybeig56thw25um6zre5ra2aokk4on4s5i3oznvztoqt2cfof6jaubzna/1449.png",
-  "dna": "e09f8b1c86a0f2a8f0203dbb1ed695b0aec7f9af",
-  "edition": 1449,
-  "date": 1656609993039,
-  "attributes": [
-    {
-      "trait_type": "Background",
-      "value": "Town"
-    },
-    {
-      "trait_type": "Body",
-      "value": "Iron Grey"
-    },
-    {
-      "trait_type": "Eyes",
-      "value": "Pink Laser Eyes"
-    },
-    {
-      "trait_type": "Mouth",
-      "value": "Pacifier"
-    },
-    {
-      "trait_type": "Neck",
-      "value": "Diamond Chain"
-    }
-  ],
-  "compiler": "HashLips Art Engine"
-}
-
-This is the way to move forward for content addressing & opensea to identify our attributes and render them 
-accordingly. To create a seperate marketplace and for the UI to adapt to the changes we would need to emit the
-events. This is where the need to create structs based on the specs.
-
-
-     */
-
-
-mapping(address=>BasicNftAttributes) public BasicAttributeTracker ;
-
-
-/**Every time we create an instance of the NFT contract
-to mint a NFT , using the constructor we can set up the 
-inital attributes.
-
-Further we will create a seperate function which will
-then decide what type of NFT we are minting based 
-
-*/
-
+// Based on the token type we need to 
 /**
-         struct CharacterAttributes {
-    uint characterIndex;
-    string name;
-    string imageURI;        
-    uint hp;
-    uint maxHp;z
-    uint attackDamage;
-  }
+Here the address refers to the contract address and not the wallet address.
+if(BasicAttributes_NFTTracker[contractaddress].tokenType == "AccessToken") 
+{
+    // This check must be performed from the client-side if it is an accessToken then 
+    // pass attributes for creating NFT of that type.
+}
  */
 
-
-// Every NFT will have a set of commonattributes
-// 
-
-
-
-struct AccessTokenNFT
-{
-    CommonAttributes  attr memory[] ;
-}
-
-    
 
 
 }
