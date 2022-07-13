@@ -61,7 +61,7 @@ uint256 FirstAcceesTokens_MP4 = 75 ; // 5263
 
 
 
-struct NftAttributes 
+struct BasicNftAttributes 
     {
         uint256 tokenId ;
         uint256 tokenName ;
@@ -69,7 +69,53 @@ struct NftAttributes
         string tokenURI  ;
     };
 
-mapping(address=>NftAttributes) public BasicAttributeTracker ;
+    /**
+    0xcce -> tokenId : 1
+             tokenName : Ranger
+             ImageURI : "ipfs://"
+             tokenURI : "ipfs://"   --> Here will point to the metadata
+
+{
+  "name": "Meka Rhinos #1449",
+  "description": "MekaRhinos is a special collection on the ethereum network with a limited number of 3.333 unique pieces. Thanks to the specially developed staking system, MekaRhino holders will generate daily $RHNO tokens and will be able to mint the upcoming Mutant MekaRhino collection using $RHNO tokens.\n\nMekaRhino holders will also able to use $RHNO tokens to purchase limited edition items available in the Merch Shop.",
+  "image": "ipfs://bafybeig56thw25um6zre5ra2aokk4on4s5i3oznvztoqt2cfof6jaubzna/1449.png",
+  "dna": "e09f8b1c86a0f2a8f0203dbb1ed695b0aec7f9af",
+  "edition": 1449,
+  "date": 1656609993039,
+  "attributes": [
+    {
+      "trait_type": "Background",
+      "value": "Town"
+    },
+    {
+      "trait_type": "Body",
+      "value": "Iron Grey"
+    },
+    {
+      "trait_type": "Eyes",
+      "value": "Pink Laser Eyes"
+    },
+    {
+      "trait_type": "Mouth",
+      "value": "Pacifier"
+    },
+    {
+      "trait_type": "Neck",
+      "value": "Diamond Chain"
+    }
+  ],
+  "compiler": "HashLips Art Engine"
+}
+
+This is the way to move forward for content addressing & opensea to identify our attributes and render them 
+accordingly. To create a seperate marketplace and for the UI to adapt to the changes we would need to emit the
+events. This is where the need to create structs based on the specs.
+
+
+     */
+
+
+mapping(address=>BasicNftAttributes) public BasicAttributeTracker ;
 
 
 /**Every time we create an instance of the NFT contract
