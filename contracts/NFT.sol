@@ -76,27 +76,44 @@ struct BasicNft
 
 struct AccessTokenNFT
 {
-    string tokenAcessType ;
-    string tokenAccessTypeDescription ;
-    string characterQualityOne ; // will be defined later
-    string characterQualityTwo ;  
+        uint256 tokenId ;
+        uint256 tokenName ;
+        string ImageURI ;
+        string tokenURI  ;
+        string tokenType ;
+        string tokenAcessType ;
+        string tokenAccessTypeDescription ;
+        string characterQualityOne ; // will be defined later
+        string characterQualityTwo ;  
 }
 
 struct MentorshipAndCollabNFT
-{
-    string tokenAccesType ;
-    string tokenAccessTypeDescription ;
-    uint256 duration ;  
+{       uint256 tokenId ;
+        uint256 tokenName ;
+        string ImageURI ;
+        string tokenURI  ;
+        string tokenType ;
+        string tokenAccesType ;
+        string tokenAccessTypeDescription ;
+        uint256 duration ;  
 }
 
 struct PremiumCollectibleNFT
 {
-    UnlockableNFTContentType CollectibleType ;
-    string PremiumPerks ;
+        uint256 tokenId ;
+        uint256 tokenName ;
+        string ImageURI ;
+        string tokenURI  ;
+        string tokenType ;
+        UnlockableNFTContentType CollectibleType ;
+        string PremiumPerks ;
 }
 
 mapping(address=>BasicNft) public BasicAttributes_NFTTracker ;
 // mapping 
+
+
+
 
 
 
@@ -108,12 +125,19 @@ constructor(
         string[] memory tokenType 
 ) ERC721("Artists" , "ART")
 {
+    bytes32 tokentype_one = keccak256(abi.encodePacked("BasicNFT"));
+    bytes32 tokentype_two = keccak256(abi.encodePacked("AccessTokenNFT"));
+    bytes32 tokentype_three = keccak256(abi.encodePacked("MentorshipAndCollabNFT"));
+    bytes32 tokentype_four = keccak256(abi.encodePacked("PremiumCollectibleNFT"));
+
     for(uint i=0 ; i<tokenNames.length ; i++)
     {
-     if(keccak256(abi.encodePacked(tokenType[i])) == abi.encodePacked("BasicNFT"))
-     {
+       bytes32 a = keccak256(abi.encodePacked(tokenNames[i]));
+       if(a==tokentype_one)
+       { 
+            
+       }
 
-     }
     }
 }
 // Based on the tokentype we can create the struct
