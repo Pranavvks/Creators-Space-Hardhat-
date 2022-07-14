@@ -65,9 +65,6 @@ uint256 FirstAcceesTokens_MP4 = 75 ; // 5163
     // 5. Using Chainlink we need to find a solution to update 
     //    the 
     
-
-
-
 struct BasicNft 
     {
         uint256 tokenId ;
@@ -98,9 +95,35 @@ struct PremiumCollectibleNFT
     string PremiumPerks ;
 }
 
-
-
 mapping(address=>BasicNft) public BasicAttributes_NFTTracker ;
+// mapping 
+
+
+
+
+constructor(
+        string[] memory tokenNames ,
+        string[] memory ImageURI ,
+        string[] memory tokenURI ,
+        string[] memory tokenType 
+) ERC721("Artists" , "ART")
+{
+    for(uint i=0 ; i<tokenNames.length ; i++)
+    {
+     if(keccak256(abi.encodePacked(tokenType[i])) == abi.encodePacked("BasicNFT"))
+     {
+
+     }
+    }
+}
+// Based on the tokentype we can create the struct
+//  if it is a basicNFt then we would create the pattern following that of a basic NFT
+
+// If the NFT is unlockable or some other category then create the corresponding struct
+// whenever the corresponding struct is created we need to emit an event for the indexing protocols.
+
+
+
 
 /**
 @dev
