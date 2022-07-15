@@ -1,177 +1,99 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-// Import this file to use console.log
-import "hardhat/console.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/common/ERC2981.sol"; 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
+// We are inheriting ERC721URIStorage instead of ERC721
+// This will allow us to use the _setTokenURI() function
+contract NFT is ERC721URIStorage {
+   using Counters for Counters.Counter;
+   Counters.Counter private _tokenIds;
 
-contract NFT is ERC2981 , Ownable , ERC721Enumerable , ReentrancyGuard {
+   address public artist;
+   address public txFeeToken;
+   uint256 public txFeeAmount;
+   mapping(address => bool) public excludedList;
 
-mapping(address=>bool) private WhiteListedAddresses;
-mapping(address=>uint) public OwnershipTracker;
+   constructor(
+    address _artist, 
+    address _txFeeToken,
+    uint _txFeeAmount
+  ) ERC721('RandomAritst', 'ABC') {
+    artist = _artist;
+    txFeeToken = _txFeeToken;
+    txFeeAmount = _txFeeAmount;
+    excludedList[_artist] = true;
+  }
 
-uint256 public constant c_COLLECTION_SIZE = 5163 ;
-uint256 public constant c_TOKENS_PER_PERSON = 5 ;
+   function setExcluded(address excluded, bool status) external {
+    require(msg.sender == artist, 'artist only');
+    excludedList[excluded] = status;
+  }
 
-enum UnlockableNFTContentType{
-MP3 ,
-MP4 ,
-PICTURE
-}
+   function mintNFT(address recipient, string memory tokenURI)
+       public
+       returns (uint256)
+   {
+       _tokenIds.increment();
+       uint256 newItemId = _tokenIds.current();
+       _safeMint(recipient, newItemId);
+       _setTokenURI(newItemId, tokenURI);
+       return newItemId;
+   }
 
+   // To implement royalties, we need to override the methods in ERC721URIStorage
+   // The methods include transferFrom(from, to tokenID), safeTansferFrom(from, to tokenID), safeTansferFrom(from, to, tokenID, data)
+   function transferFrom(
+    address from, 
+    address to, 
+    uint256 tokenId
+  ) public override {
+     require(
+       _isApprovedOrOwner(_msgSender(), tokenId), 
+       'ERC721: transfer caller is not owner nor approved'
+     );
+     if(excludedList[from] == false) {
+      _payTxFee(from);
+     }
+     _transfer(from, to, tokenId);
+  }
 
-using Counters for Counters.Counter ;
+   function safeTransferFrom(
+    address from,
+    address to,
+    uint256 tokenId
+   ) public override {
+     require(
+      _isApprovedOrOwner(_msgSender(), tokenId), 
+      'ERC721: transfer caller is not owner nor approved'
+    );
+     if(excludedList[from] == false) {
+       _payTxFee(from);
+     }
+     safeTransferFrom(from, to, tokenId, '');
+   }
 
-
-uint256 EntryTokens = 4000 ;
-uint256 HangoutToken = 300 ;
-uint256 Facetimetoken = 200 ;
-uint256 Breakfasttoken = 50 ;
-uint256 BrunchToken = 50 ;
-uint256 DinnerToken = 50 ;
-uint256 ShoppingToken = 30 ; //4680
-uint256 WorkoutToken = 5 ;   // 4685
-uint256 BowlingToken = 10 ;  // 4705
-uint256 AllConcertAccess = 200 ; // 4905
-uint256 VIPConcert = 20 ; // 4925
-uint256 VirtualMentorship = 15 ; // 5040 
-uint256 Mentorship = 5 ; // 5045
-uint256 GroupMentoring = 20 ; // 5065
-uint256 CollabTokens = 3 ; // 5068
-uint256 ConcertMix = 10 ; // 5078
-uint256 RequestYourArtistFav = 10 ; // 5088
-uint256 FirstAcceesTokens_MP3 = 100 ; // 5188
-uint256 FirstAcceesTokens_MP4 = 75 ; // 5163
-
-// 5188 
-
-// TO DO :
-    // 1. Set up the functions for
-        // a. mint token & struct definition
-        // b. transfer token
-        // c. royalty
-        // d.  
-        // e. 
-        // f. 
-    // 2. Modifiers required
-    // 3. Usage of IPFS and filecoin to upload metadata 
-    // 4. Find out whether we need to create a struct
-    //    or the same can be adapted to   
-    // 5. Using Chainlink we need to find a solution to update 
-    //    the 
-    
-struct BasicNft 
-    {
-        uint256 tokenId ;
-        uint256 tokenName ;
-        string ImageURI ;
-        string tokenURI  ;
-        string tokenType ;
+  function safeTransferFrom(
+    address from,
+    address to,
+    uint256 tokenId,
+    bytes memory _data
+  ) public override {
+    require(
+      _isApprovedOrOwner(_msgSender(), tokenId), 
+      'ERC721: transfer caller is not owner nor approved'
+    );
+    if(excludedList[from] == false) {
+      _payTxFee(from);
     }
+    _safeTransfer(from, to, tokenId, _data);
+  }
 
-struct AccessTokenNFT
-{
-        uint256 tokenId ;
-        uint256 tokenName ;
-        string ImageURI ;
-        string tokenURI  ;
-        string tokenType ;
-        string tokenAcessType ;
-        string tokenAccessTypeDescription ;
-        string characterQualityOne ; // will be defined later
-        string characterQualityTwo ;  
-}
-
-struct MentorshipAndCollabNFT
-{       uint256 tokenId ;
-        uint256 tokenName ;
-        string ImageURI ;
-        string tokenURI  ;
-        string tokenType ;
-        string tokenAccesType ;
-        string tokenAccessTypeDescription ;
-        uint256 duration ;  
-}
-
-struct PremiumCollectibleNFT
-{
-        uint256 tokenId ;
-        uint256 tokenName ;
-        string ImageURI ;
-        string tokenURI  ;
-        string tokenType ;
-        UnlockableNFTContentType CollectibleType ;
-        string PremiumPerks ;
-}
-
-mapping(address=>BasicNft) public BasicAttributes_NFTTracker ;
-// mapping 
-
-
-
-
-
-
-
-constructor(
-        string[] memory tokenNames ,
-        string[] memory ImageURI ,
-        string[] memory tokenURI ,
-        string[] memory tokenType 
-) ERC721("Artists" , "ART")
-{
-    bytes32 tokentype_one = keccak256(abi.encodePacked("BasicNFT"));
-    bytes32 tokentype_two = keccak256(abi.encodePacked("AccessTokenNFT"));
-    bytes32 tokentype_three = keccak256(abi.encodePacked("MentorshipAndCollabNFT"));
-    bytes32 tokentype_four = keccak256(abi.encodePacked("PremiumCollectibleNFT"));
-
-    for(uint i=0 ; i<tokenNames.length ; i++)
-    {
-       bytes32 a = keccak256(abi.encodePacked(tokenNames[i]));
-       if(a==tokentype_one)
-       { 
-            
-       }
-
-    }
-}
-// Based on the tokentype we can create the struct
-//  if it is a basicNFt then we would create the pattern following that of a basic NFT
-
-// If the NFT is unlockable or some other category then create the corresponding struct
-// whenever the corresponding struct is created we need to emit an event for the indexing protocols.
-
-
-
-
-/**
-@dev
-This mapping is only used to track those tokens which would  
-be extensible. If the tokenType is a BasicNFT then is there a need
-for us to keep track of these basic NFT's ??.
-
-** /
-
-/**
-    Each contract address will point to a unique NFT. 
- */
-
-
-// Based on the token type we need to 
-/**
-Here the address refers to the contract address and not the wallet address.
-if(BasicAttributes_NFTTracker[contractaddress].tokenType == "AccessToken") 
-{
-    // This check must be performed from the client-side if it is an accessToken then 
-    // pass attributes for creating NFT of that type.
-}
- */
-
-
-
+   function _payTxFee(address from) internal {
+    IERC20 token = IERC20(txFeeToken);
+    token.transferFrom(from, artist, txFeeAmount);
+  }
 }
