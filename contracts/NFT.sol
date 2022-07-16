@@ -12,11 +12,30 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract NFT is ERC2981 , Ownable , ERC721Enumerable , ReentrancyGuard {
 
+
+    
+
+address public minter ;
+
+// tokenId
+
+mapping(uint256=>BasicNFT) public BasicNFTs;
+mapping(uint256=>AccessTokenNFT) public AccessTokenNFTs;
+mapping(uint256=>BasicNFT) public MentorshipAndCollabNFTs;
+mapping(uint256=>AccessTokenNFT) public PremiumCollectibleNFTs ;
+
+//I need to identify the tokenType ,
+// After finding the tokenType only can I store 
+// the contract
 mapping(address=>bool) private WhiteListedAddresses;
+// whitelis
 mapping(address=>uint) public OwnershipTracker;
+// nft tracker
 
 uint256 public constant c_COLLECTION_SIZE = 5163 ;
+// 4
 uint256 public constant c_TOKENS_PER_PERSON = 5 ;
+
 
 enum UnlockableNFTContentType{
 MP3 ,
@@ -65,6 +84,8 @@ uint256 FirstAcceesTokens_MP4 = 75 ; // 5163
     // 5. Using Chainlink we need to find a solution to update 
     //    the 
     
+    // ipfs
+    //  
 struct BasicNft 
     {
         uint256 tokenId ;
@@ -73,6 +94,8 @@ struct BasicNft
         string tokenURI  ;
         string tokenType ;
     }
+
+BasicNft[] basicNFTCollection ; 
 
 struct AccessTokenNFT
 {
@@ -87,6 +110,8 @@ struct AccessTokenNFT
         string characterQualityTwo ;  
 }
 
+AccessTokenNFT[] AccessTokenNFTCollection ;
+
 struct MentorshipAndCollabNFT
 {       uint256 tokenId ;
         uint256 tokenName ;
@@ -97,6 +122,8 @@ struct MentorshipAndCollabNFT
         string tokenAccessTypeDescription ;
         uint256 duration ;  
 }
+
+MentorshipAndCollabNFT[] MentorshipAndCollabNFTCollection ;
 
 struct PremiumCollectibleNFT
 {
@@ -109,9 +136,13 @@ struct PremiumCollectibleNFT
         string PremiumPerks ;
 }
 
-mapping(address=>BasicNft) public BasicAttributes_NFTTracker ;
-// mapping 
+PremiumCollectibleNFT[] PremiumCollectibleNFTCollection ;
 
+// mapping(address=>BasicNft) public BasicAttributes_NFTTracker ;
+// mapping 
+// what if we could pass a mapping to the constructor 
+// This mapping would point to the unique attributes that 
+// mapping(=>PremimumNFTOnlyAttr)
 
 
 
@@ -119,24 +150,57 @@ mapping(address=>BasicNft) public BasicAttributes_NFTTracker ;
 
 
 constructor(
-        string[] memory tokenNames ,
+        string[] memory tokenNames , // csv -> 
         string[] memory ImageURI ,
         string[] memory tokenURI ,
         string[] memory tokenType 
 ) ERC721("Artists" , "ART")
 {
     bytes32 tokentype_one = keccak256(abi.encodePacked("BasicNFT"));
+
     bytes32 tokentype_two = keccak256(abi.encodePacked("AccessTokenNFT"));
     bytes32 tokentype_three = keccak256(abi.encodePacked("MentorshipAndCollabNFT"));
     bytes32 tokentype_four = keccak256(abi.encodePacked("PremiumCollectibleNFT"));
+
+/*
+  uint256 tokenId ;
+        uint256 tokenName ;
+        string ImageURI ;
+        string tokenURI  ;
+        string tokenType ;
+
+
+*/
+
 
     for(uint i=0 ; i<tokenNames.length ; i++)
     {
        bytes32 a = keccak256(abi.encodePacked(tokenNames[i]));
        if(a==tokentype_one)
        { 
-            
+         basicNFTCollection.push(BasicNft({
+         tokenId : i ,
+         ImageURI :ImageURI[i],
+         tokenURI : tokenURI[i],
+         tokenType : tokenType[i]
+      }));
        }
+       if(a==tokentype_two)
+       { 
+        
+       }
+        if(a==tokentype_three)
+       { 
+        
+       }
+        if(a==tokentype_four)
+       { 
+        
+       }
+        
+       }
+
+
 
     }
 }
@@ -146,6 +210,36 @@ constructor(
 // If the NFT is unlockable or some other category then create the corresponding struct
 // whenever the corresponding struct is created we need to emit an event for the indexing protocols.
 
+
+/**
+struct Metadata {
+        string answer;
+        string credit;
+        Attribute attribute;
+    }
+
+    struct Request {
+        uint256 tokenId;
+        Attribute attribute;
+    }
+
+    struct Attribute {
+        bytes32 questionCategory;
+        string question;
+        bytes32 attributeSkinTone;
+        bytes32 attributeHairFront;
+        bytes32 attributeHairBack;
+        bytes32 attributeEar;
+        bytes32 attributeEyes;
+        bytes32 attributeClothing;
+        bytes32 attributeDna;
+        bytes32 attributeFace;
+        bytes32 attributeNeck;
+        bytes32 attributeMouth;
+        bytes32 attributeSpecial;
+    }
+
+ */
 
 
 
