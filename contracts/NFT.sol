@@ -41,9 +41,7 @@ contract NFT is ERC721URIStorage, ERC2981 , Ownable {
    address public txFeeToken; // ??
    uint256 public txFeeAmount;
    
-   mapping(address => bool) public excludedList;
-   event NFT_Minted(uint256 indexed tokenId);
-  
+   mapping(address => bool) public excludedList;  
    
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC2981) returns (bool) {
         return super.supportsInterface(interfaceId);
@@ -71,6 +69,11 @@ contract NFT is ERC721URIStorage, ERC2981 , Ownable {
     excludedList[_royaltyReceiver] = true;
   }
 
+  event NFT_Minted(
+    uint256 indexed tokenId, 
+    string tokenURI
+  );
+
    function setExcluded(address excluded, bool status) external {
     require(msg.sender == royaltyReceiver, 'royaltyReceiver only');
     excludedList[excluded] = status;
@@ -78,7 +81,6 @@ contract NFT is ERC721URIStorage, ERC2981 , Ownable {
 
    function mintNFT(string memory tokenURI)
        public
-       returns (uint256)
    {
        _tokenIds.increment();
        uint256 newItemId = _tokenIds.current();
@@ -90,8 +92,7 @@ contract NFT is ERC721URIStorage, ERC2981 , Ownable {
       // Interactions will be made using the NFTmarketplace contract. 
         */
        _setTokenURI(newItemId, tokenURI);
-       emit NFT_Minted(newItemId);
-       return newItemId; // An event must be emitted here
+       emit NFT_Minted(newItemId, tokenURI);
    }
 
 
