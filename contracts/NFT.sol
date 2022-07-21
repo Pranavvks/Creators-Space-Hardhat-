@@ -9,62 +9,21 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/draft-EIP712.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/common/ERC2981.sol"; 
+import "../contracts/NFTCollectionOwner.sol" ;
 
-contract NFTCollectionOwner is Ownable ,  ERC2981
-{
-
-    // address payable RoyaltyReceiverAddress ;
-    function getRoyaltyAddress()  public view   returns (address payable ) 
-    {
-    //   return  owner ();
-    //  RoyaltyReceiverAddress = payable(owner());
-     return (payable(owner()))   ;
-    }
-
-     function setDefaultRoyalty(uint96 feeNumerator) private onlyOwner
-   {
-    _setDefaultRoyalty(owner(), feeNumerator);
-   }
-
-//   function setTokenRoyalty(
-//         uint256 tokenId,
-//         uint96 feeNumerator
-//     ) external onlyOwner {
-//         _setTokenRoyalty(tokenId, owner(), feeNumerator);
-//     }
-
-
-    // function GetRoyaltyInfo(uint256 _saleprice) external returns (uint256)
-    // {
-    //     royaltyInfo(_tokenId, _salePrice);
-    // }
-
-
-
- function RoyaltyPrice( uint256 tokenId,uint256 _salePrice) public view  returns (address ,uint256)
- {
-   return royaltyInfo(tokenId,_salePrice);
- }
-    
-     function deleteDefaultRoyalty() external onlyOwner {
-        _deleteDefaultRoyalty();
-    }
-}
-
-
-contract LazyNFT is ERC721URIStorage, EIP712, AccessControl , ERC2981 {
+contract NFT is ERC721URIStorage, EIP712, AccessControl , ERC2981 {
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
   string private constant SIGNING_DOMAIN = "LazyNFT-Voucher";
   string private constant SIGNATURE_VERSION = "1";
   // address payable  RoyaltyAddress ;
   address _NFTCollectionOwnerContractAddress=0x92544951e7142f38Ba288E5Dab2a9b7339e2e794 ;
   // fake address
-  event Sale(address from, address to, uint256 value);
-
+  event Sale(address indexed from, address indexed to, uint256 indexed value);
+  event Mint(address indexed caller , uint256 indexed tokenId);
 
   constructor(address payable minter)
   
-  ERC721("LazyNFT", "LAZ") 
+  ERC721("NFT", "LAZ") 
     EIP712(SIGNING_DOMAIN, SIGNATURE_VERSION) {
       _setupRole(MINTER_ROLE, minter);
     }
@@ -187,6 +146,7 @@ contract LazyNFT is ERC721URIStorage, EIP712, AccessControl , ERC2981 {
 
      _safeMint(msg.sender, voucher.tokenId);
 
+     emit Mint(msg.sender, voucher.tokenId);
       
       // The royalty amount will be 10% of the NFT price. During testing 
       
