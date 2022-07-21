@@ -25,13 +25,22 @@ TO DO :
 
 NFT Marketplace contract would deal with the transfer of funds.
 1. The NFT mint function can only be called by the owner of the 
-   collection.
+   collection. (DONE)
 2. Read about the ERC 2981 standard of royalty implementation. 
-   Setup a standard for the royalty function.
-3. Implement events , modifiers and errors 
-4. 
+   Setup a standard for the royalty function. (DONE)
+3. Implement events , modifiers and errors. 
+4. NFT airdrop functionality
+
 
  */
+
+/*
+To DO :
+1. Setting up the royalty address of the artist.
+We also need to 
+
+*/
+
 
 contract NFT is ERC721URIStorage, ERC2981 , Ownable {
    using Counters for Counters.Counter;
@@ -193,4 +202,16 @@ contract NFT is ERC721URIStorage, ERC2981 , Ownable {
   }
 }
 
-
+function airdrop (mapping(address=>bool) _recipients , uint[] _values)  onlyOwner public returns (bool)
+{
+  require(msg.sender == );
+  for(uint i=0 ; i<_values.length ; i++)
+  {
+   
+  }
+}
+/**
+There needs to be a way to implement the functionality of
+transffering the royalty amount from the buyer of the NFT to the 
+NFTCollectionOwner
+ */
