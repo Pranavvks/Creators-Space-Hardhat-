@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@nomicfoundation/hardhat-toolbox": "^1.0.2",
+    "@nomiclabs/hardhat-waffle": "^2.0.3",
     "package.json": "^2.0.1",
     "pkg.json": "^2.0.8"
   }
