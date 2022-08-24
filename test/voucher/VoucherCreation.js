@@ -754,11 +754,11 @@ const abi =  [{
 
 // const abi = require("../../artifacts/contracts/NFT.sol/NFT.json")
 
-const LazyMinter = require("./LaMinter")
+const LazyMinter = require("./LazyMinter")
 const provider = new ethers.providers.JsonRpcProvider("https://rpc-mumbai.maticvigil.com/v1/2c67ca5c09dce14e3a751d1fa80fc8157996dc7a");
 const address = 0xbC9d9B320312b1a06318d00e95d8f5404613C4f9
 const signer = provider.getSigner();
 const contract = new ethers.Contract(address,abi,provider);
 console.log(contract);
-const object = new LazyMinter(contract,signer)
+const object = new LazyMinter({contract,signer})
 console.log(object);
