@@ -61,6 +61,8 @@ class LazyMinter {
     }
   }
 
+  
+                      
   /**
    * @private
    * @returns {object} the EIP-721 signing domain, tied to the chainId of the signer
@@ -845,10 +847,18 @@ const abi =  [{
 
 
 const provider = new ethers.providers.JsonRpcProvider("https://rpc-mumbai.maticvigil.com/v1/2c67ca5c09dce14e3a751d1fa80fc8157996dc7a");
-const address = 0xbC9d9B320312b1a06318d00e95d8f5404613C4f9
-const signer = provider.getSigner();
-const contract = new ethers.Contract(address,abi,provider);
+const address="0xbC9d9B320312b1a06318d00e95d8f5404613C4f9"
+const privatekey=""
+const wallet = new ethers.Wallet(privatekey,provider)
+const signer = wallet.provider.getSigner(wallet.address);
+console.log(signer)
+const contract = new ethers.Contract(address,abi,signer);
+// console.log(contract.address);
 // console.log(contract);
 const object = new LazyMinter({contract,signer})
-object.createVoucher()
-console.log(object);
+//console.log(object)
+const result =  object.createVoucher(1,"ipfs://bafybeidlkqhddsjrdue7y3dy27pu5d7ydyemcls4z24szlyik3we7vqvam/nft-image.png")
+result.then((response)=>{
+  console.log(response)
+})
+// 
