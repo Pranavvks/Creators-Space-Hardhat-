@@ -139,28 +139,19 @@ contract NftMarketplace is ReentrancyGuard {
         isListed(nftAddress, tokenId)
         nonReentrant
     {
-        // Challenge - How would you refactor this contract to take:
-        // 1. Abitrary tokens as payment? (HINT - Chainlink Price Feeds!)
-        // 2. Be able to set prices in other currencies?
-        // 3. Tweet me @PatrickAlphaC if you come up with a solution!
+        
         Listing memory listedItem = s_listings[nftAddress][tokenId];
         if (msg.value < listedItem.price) {
             revert PriceNotMet(nftAddress, tokenId, listedItem.price);
         }
         s_proceeds[listedItem.seller] += msg.value;
-        // Could just send the money...
-        // https://fravoll.github.io/solidity-patterns/pull_over_push.html
+       
         delete (s_listings[nftAddress][tokenId]);
         IERC721(nftAddress).safeTransferFrom(listedItem.seller, msg.sender, tokenId);
         emit ItemBought(msg.sender, nftAddress, tokenId, listedItem.price);
     }
 
-    /*
-     * @notice Method for updating listing
-     * @param nftAddress Address of NFT contract
-     * @param tokenId Token ID of NFT
-     * @param newPrice Price in Wei of the item
-     */
+    
     function updateListing(
         address nftAddress,
         uint256 tokenId,
@@ -175,9 +166,6 @@ contract NftMarketplace is ReentrancyGuard {
         emit ItemListed(msg.sender, nftAddress, tokenId, newPrice);
     }
 
-    /*
-     * @notice Method for withdrawing proceeds from sales
-     */
     function withdrawProceeds() external {
         uint256 proceeds = s_proceeds[msg.sender];
         if (proceeds <= 0) {
@@ -188,9 +176,7 @@ contract NftMarketplace is ReentrancyGuard {
         require(success, "Transfer failed");
     }
 
-    /////////////////////
-    // Getter Functions //
-    /////////////////////
+  
 
     function getListing(address nftAddress, uint256 tokenId)
         external

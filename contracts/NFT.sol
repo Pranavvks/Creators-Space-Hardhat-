@@ -45,7 +45,7 @@ contract NFT is ERC721URIStorage, ERC2981 , Ownable {
    
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, ERC2981) returns (bool) {
         return super.supportsInterface(interfaceId);
-    } // Need to check what this is :)
+    } 
 
 
   //  struct NFTAttributes

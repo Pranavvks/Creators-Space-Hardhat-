@@ -5326,6 +5326,15 @@ pinkie@^2.0.0:
   resolved "https://registry.yarnpkg.com/pinkie/-/pinkie-2.0.4.tgz#72556b80cfa0d48a974e80e77248e80ed4f7f870"
   integrity sha512-MnUuEycAemtSaeFSjXKW/aroV7akBbY+Sv+RkyqFjgAe73F+MR0TBWKBRDkmfWq/HiFmdavfZ1G7h4SPZXaCSg==
 
+pkg.json@^2.0.8:
+  version "2.0.8"
+  resolved "https://registry.yarnpkg.com/pkg.json/-/pkg.json-2.0.8.tgz#c9f2eb465622a86b2d532eeb9f3cd96697064dc1"
+  integrity sha512-iIBceNPwO452wLbF73GCV5z/TY9UydLWEV+wBjegAObPF/PihDL9ZUr2g2EFI7XqPFMTLEX/QtL63Z+zzFZ7yA==
+  dependencies:
+    git-package-json "^1.4.0"
+    git-source "^1.1.0"
+    package-json "^2.3.1"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
